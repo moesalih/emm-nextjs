@@ -26,6 +26,8 @@ Use `/heartbeat` command to schedule a task. The AI agent will only send you a m
 3. `/heartbeat` command saves your chat ID + a scheduled task to `HEARTBEAT.md` (in the agent's file workspace)
 4. A Vercel cron runs `/api/heartbeat` regularly — the agent reads `HEARTBEAT.md` and sends a message only if something needs attention
 
+> The cron schedule can be updated in `vercel.json`.
+
 > **Dev vs Prod**: In development, the bot uses long-polling (`bot.start()`); in production, it uses the Telegram webhook.
 
 ---
