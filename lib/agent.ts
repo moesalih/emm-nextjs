@@ -39,7 +39,7 @@ export async function handleHeartbeat() {
 
 const HEARTBEAT_ADD_PROMPT = 'add the following user request to HEARTBEAT.md (create it if needed): '
 const HEARTBEAT_PROMPT =
-  'Read HEARTBEAT.md if it exists. Follow it strictly. For any item scheduled at or around a specific time, do it if its within 20 minutes of current time. Do not infer or repeat old tasks from prior chats. If nothing needs attention, reply HEARTBEAT_OK.'
+  'Read HEARTBEAT.md if it exists. Follow it strictly. For any item scheduled at or around a specific time, do it if its within 15 minutes of current time. Do not infer or repeat old tasks from prior chats. If nothing needs attention, reply HEARTBEAT_OK.'
 
 const currentTime = () =>
   new Date().toLocaleString('en-US', { timeZone: 'America/New_York', hour: 'numeric', minute: '2-digit', hour12: true })
