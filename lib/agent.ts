@@ -24,13 +24,16 @@ export async function handleMessage(request: Request): Promise<Response> {
   }
 
   await startTyping(chatId)
-  const response = await box.agent.run({ prompt: message })
+  const response = await box.agent.run({
+    prompt: message,
+    onToolUse: (tool) => console.log(`!! Using tool: ${tool.name} with input: ${tool.input}`),
+  })
   return await respond(chatId, message, response.result)
 }
 
 const respond = async (chatId: string, message: string, response: string) => {
-  await sendTelegramMessage(chatId, response)
   console.log(`>> ${response}`)
+  await sendTelegramMessage(chatId, response)
   return Response.json({ status: 'success', chatId, message, response })
 }
 

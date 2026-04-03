@@ -10,7 +10,7 @@ telegramBot.on('message:text', async (ctx) => {
 
   fetch(`${appUrl}/api/message?chatId=${ctx.chat.id}&message=${encodeURIComponent(ctx.message.text)}`)
     .then((res) => res.json())
-    .then(console.log)
+    // .then(console.log)
     .catch(console.error)
 
   await delay(1000)
@@ -27,5 +27,9 @@ export const startTyping = async (chatId: string) => {
 }
 
 export const sendTelegramMessage = async (chatId: string, message: string) => {
-  await telegramBot.api.sendMessage(chatId, telegramifyMarkdown(message, 'escape'), { parse_mode: 'MarkdownV2' })
+  try {
+    await telegramBot.api.sendMessage(chatId, telegramifyMarkdown(message, 'escape'), { parse_mode: 'MarkdownV2' })
+  } catch {
+    await telegramBot.api.sendMessage(chatId, message)
+  }
 }
