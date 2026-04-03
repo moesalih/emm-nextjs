@@ -12,7 +12,7 @@
     "@chat-adapter/state-memory": "^4.19.0",
     "@chat-adapter/state-redis": "^4.20.1",
     "@chat-adapter/telegram": "^4.19.0",
-    "@upstash/box": "^0.1.21",
+    "@upstash/box": "^0.1.32",
     "chat": "^4.19.0",
     "grammy": "^1.41.1",
     "next": "16.1.6",

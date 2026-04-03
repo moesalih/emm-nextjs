@@ -9,17 +9,29 @@ export async function handleMessage(request: Request): Promise<Response> {
   if (!chatId) return Response.json({ error: 'chatId query parameter is required' }, { status: 400 })
   if (!message) return Response.json({ error: 'message query parameter is required' }, { status: 400 })
 
-  if (message.includes('/heartbeat')) {
+  if (message.startsWith('/pause')) {
+    await box.pause()
+    message = '/status'
+  }
+  if (message.startsWith('/status')) {
+    const { status } = await box.getStatus()
+    return await respond(chatId, message, `Box status: ${status}`)
+  }
+
+  if (message.startsWith('/heartbeat')) {
     await box.files.write({ path: 'LAST_CHAT_ID.txt', content: chatId })
     message = message.replace('/heartbeat', HEARTBEAT_ADD_PROMPT).trim()
   }
 
   await startTyping(chatId)
   const response = await box.agent.run({ prompt: message })
-  await sendTelegramMessage(chatId, response.result)
+  return await respond(chatId, message, response.result)
+}
 
-  console.log(`>> ${response.result}`)
-  return Response.json({ status: 'success', chatId, message, response: response.result })
+const respond = async (chatId: string, message: string, response: string) => {
+  await sendTelegramMessage(chatId, response)
+  console.log(`>> ${response}`)
+  return Response.json({ status: 'success', chatId, message, response })
 }
 
 // handle heartbeat from cron
