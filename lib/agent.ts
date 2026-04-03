@@ -1,4 +1,4 @@
-import { telegramBot } from '@/lib/bot-grammy'
+import { startTyping, sendTelegramMessage } from '@/lib/bot-grammy'
 import { box } from '@/lib/box'
 
 // handle user message from telegram webhook/api
@@ -14,9 +14,9 @@ export async function handleMessage(request: Request): Promise<Response> {
     message = message.replace('/heartbeat', HEARTBEAT_ADD_PROMPT).trim()
   }
 
-  await telegramBot.api.sendChatAction(chatId, 'typing')
+  await startTyping(chatId)
   const response = await box.agent.run({ prompt: message })
-  await telegramBot.api.sendMessage(chatId, response.result)
+  await sendTelegramMessage(chatId, response.result)
 
   console.log(`>> ${response.result}`)
   return Response.json({ status: 'success', chatId, message, response: response.result })
@@ -31,7 +31,7 @@ export async function handleHeartbeat() {
   console.log(`>> ${response.result}`)
 
   if (!response.result.includes('HEARTBEAT_OK')) {
-    await telegramBot.api.sendMessage(chatId, response.result)
+    await sendTelegramMessage(chatId, response.result)
   }
 
   return Response.json({ status: 'success', chatId, response: response.result })

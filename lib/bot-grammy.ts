@@ -1,4 +1,5 @@
 import { Bot, webhookCallback } from 'grammy'
+import telegramifyMarkdown from 'telegramify-markdown'
 
 import { appUrl, delay } from './misc'
 
@@ -20,3 +21,11 @@ const isDev = process.env.NODE_ENV === 'development'
 export const handleWebhook = isDev ? () => Response.json({}) : webhookCallback(telegramBot, 'std/http')
 
 if (isDev) telegramBot.start()
+
+export const startTyping = async (chatId: string) => {
+  await telegramBot.api.sendChatAction(chatId, 'typing')
+}
+
+export const sendTelegramMessage = async (chatId: string, message: string) => {
+  await telegramBot.api.sendMessage(chatId, telegramifyMarkdown(message, 'escape'), { parse_mode: 'MarkdownV2' })
+}
