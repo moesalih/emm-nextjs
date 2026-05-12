@@ -15,7 +15,7 @@ export async function handleMessage(request: Request): Promise<Response> {
   }
   if (message.startsWith('/status')) {
     const { status } = await box.getStatus()
-    return await respond(chatId, message, `Box status: ${status}`)
+    return await respond(chatId, message, `Box status: ${status}\nBox ID: ${box.id}`)
   }
 
   if (message.startsWith('/heartbeat')) {
