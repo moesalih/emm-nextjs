@@ -24,8 +24,13 @@ export async function handleMessage(request: Request): Promise<Response> {
     message = message.replace('/schedule', '/heartbeat')
   }
   if (message.startsWith('/heartbeat')) {
-    await box.files.write({ path: 'LAST_CHAT_ID.txt', content: chatId })
-    message = message.replace('/heartbeat', HEARTBEAT_ADD_PROMPT).trim()
+    const heartbeatText = message.replace('/heartbeat', '').trim()
+    if (!heartbeatText) {
+      message = HEARTBEAT_LIST_PROMPT
+    } else {
+      await box.files.write({ path: 'LAST_CHAT_ID.txt', content: chatId })
+      message = `${HEARTBEAT_ADD_PROMPT}${heartbeatText}`
+    }
   }
 
   await startTyping(chatId)
@@ -58,6 +63,7 @@ export async function handleHeartbeat() {
 }
 
 const HEARTBEAT_ADD_PROMPT = 'add the following user request to HEARTBEAT.md (create it if needed): '
+const HEARTBEAT_LIST_PROMPT = 'List all tasks in HEARTBEAT.md. If there are no tasks, reply accordingly.'
 const HEARTBEAT_PROMPT =
   'Read HEARTBEAT.md if it exists. Follow it strictly. For any item scheduled at or around a specific time, do it if its within 15 minutes of current time. Do not infer or repeat old tasks from prior chats. If nothing needs attention, reply HEARTBEAT_OK.'
 
