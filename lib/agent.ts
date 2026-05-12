@@ -9,6 +9,8 @@ export async function handleMessage(request: Request): Promise<Response> {
   if (!chatId) return Response.json({ error: 'chatId query parameter is required' }, { status: 400 })
   if (!message) return Response.json({ error: 'message query parameter is required' }, { status: 400 })
 
+  message = message.trim()
+
   if (message.startsWith('/pause')) {
     await box.pause()
     message = '/status'
@@ -18,6 +20,9 @@ export async function handleMessage(request: Request): Promise<Response> {
     return await respond(chatId, message, `Box status: ${status}\nBox ID: ${box.id}`)
   }
 
+  if (message.startsWith('/schedule')) {
+    message = message.replace('/schedule', '/heartbeat')
+  }
   if (message.startsWith('/heartbeat')) {
     await box.files.write({ path: 'LAST_CHAT_ID.txt', content: chatId })
     message = message.replace('/heartbeat', HEARTBEAT_ADD_PROMPT).trim()
